@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+
+  basic-sanic-app:
+    container_name: basic-sanic-app
+    build: ${PROJECTS_HOME}/basic-sanic-app
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    ports:
+      - "8000:8000"
+    volumes:
+    - ${PROJECTS_HOME}/basic-sanic-app
+    networks:
+      - test-env
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 10 --no-pull --monitor-only --label-enable
+    networks:
+      - test-env
+
+networks:
+  test-env:
+    driver: bridge
